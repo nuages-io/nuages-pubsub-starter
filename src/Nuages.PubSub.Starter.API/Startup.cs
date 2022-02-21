@@ -65,8 +65,8 @@ public class Startup
         }
         else
         {
-            var stackName = _configuration.GetSection("Nuages:PubSub:StackName").Value;
-
+            var stackName = _configuration["Nuages:PubSub:StackName"];
+            Console.Write($"StackName={stackName}");
             AWSXRayRecorder.InitializeInstance(_configuration);
             AWSSDKHandler.RegisterXRayForAllServices();
 
@@ -82,22 +82,6 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapGet("/",
-                async context =>
-                {
-                    var option = app.ApplicationServices.GetService<IOptions<PubSubOptions>>();
-
-                    var config = new
-                    {
-                        PubSubOptions = option,
-                        Storage = _configuration.GetSection("Nuages:Data:Storage").Value
-                    };
-
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(config, new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    }));
-                });
         });
 
         app.UseOpenApi();

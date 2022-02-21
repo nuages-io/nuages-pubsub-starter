@@ -21,7 +21,7 @@
         <Content Include="appsettings.json" CopyToOutputDirectory="Always" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="appsettings.deploy.json" CopyToOutputDirectory="Always" Condition="Exists('appsettings.deploy.json')" />
+        <Content Include="appsettings.deploy2.json" CopyToOutputDirectory="Always" Condition="Exists('appsettings.deploy.json')" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Nuages.PubSub.Starter.WebSocket\Nuages.PubSub.Starter.WebSocket.csproj" />

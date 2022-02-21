@@ -19,7 +19,6 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
 {
     public PubSubFunction() 
     {
-        
         var configManager = new ConfigurationManager();
 
         var builder = configManager
@@ -28,27 +27,15 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             .AddJsonFile("appsettings.prod.json",  true, true)
             .AddEnvironmentVariables();
      
-        
         var name = Environment.GetEnvironmentVariable("Nuages__PubSub__StackName");
 
         if (name != null)
         {
             builder.AddSystemsManager(configureSource =>
             {
-                // Parameter Store prefix to pull configuration data from.
                 configureSource.Path = $"/{name}/WebSocket";
-
-                // Reload configuration data every 5 minutes.
                 configureSource.ReloadAfter = TimeSpan.FromMinutes(15);
-
-                // Configure if the configuration data is optional.
                 configureSource.Optional = true;
-
-                configureSource.OnLoadException += _ =>
-                {
-                    // Add custom error handling. For example, look at the exceptionContext.Exception and decide
-                    // whether to ignore the error or tell the provider to attempt to reload.
-                };
             });
         }
         
@@ -62,11 +49,9 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         serviceCollection
             .AddSingleton(configuration);
             
-        var pubSubBuilder = 
-            serviceCollection.AddPubSubLambdaRoutes(configuration)
-            .AddPubSubService();
-
-        pubSubBuilder.AddPubSubDynamoDbStorage();
+        serviceCollection.AddPubSubLambdaRoutes(configuration)
+            .AddPubSubService()
+            .AddPubSubDynamoDbStorage();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 

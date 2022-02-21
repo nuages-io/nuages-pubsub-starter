@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using Microsoft.Extensions.Options;
 using Nuages.PubSub.Services;
 using Nuages.PubSub.Storage.DynamoDb;
 
@@ -24,11 +22,26 @@ public class Startup
     {
         services.AddSingleton(_configuration);
 
-        var pubSubBuilder = services
-            .AddPubSubService(_configuration);
+        services
+            .AddPubSubService(_configuration).AddPubSubDynamoDbStorage();
 
-        pubSubBuilder.AddPubSubDynamoDbStorage();
-
+        //===================================================================
+        // To use MongoDB
+        //===================================================================
+        // 1. Add a refernce to nuget package Nuages.PubSub.Storage.MongoDb
+        //
+        // 2. replace previous line by  
+        // services
+        //     .AddPubSubService(_configuration).AddPubSubMongoStorage(config =>
+        //      {
+        //          config.ConnectionString = "";
+        //          config.DatabaseName = "";
+        //      });
+        //
+        // 3. Remove reference to Nuages.PubSub.Storage.DynamoDb
+        //
+        // 3. Apply the same changes to Nuages.PubSub.Starter.WebSocket (PubSubFunction)
+        
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -45,7 +58,7 @@ public class Startup
                 {
                     Name = "Nuages.io",
                     Email = string.Empty,
-                    Url = "https://github.com/nuages-io/nuages-pubsub"
+                    Url = "https://github.com/nuages-io/nuages-pubsub-starter"
                 };
                 document.Info.License = new NSwag.OpenApiLicense
                 {
@@ -65,12 +78,10 @@ public class Startup
         }
         else
         {
-            var stackName = _configuration["Nuages:PubSub:StackName"];
-            Console.Write($"StackName={stackName}");
             AWSXRayRecorder.InitializeInstance(_configuration);
             AWSSDKHandler.RegisterXRayForAllServices();
 
-            app.UseXRay(stackName);
+            app.UseXRay(_configuration["Nuages:PubSub:StackName"]);
         }
 
         app.UseHttpsRedirection();

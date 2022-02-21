@@ -13,8 +13,8 @@
         <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="7.0.1" />
         <PackageReference Include="AWSXRayRecorder" Version="2.10.1" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.15.9" />
-        <PackageReference Include="Nuages.PubSub.API.Endpoints" Version="1.4.5" />
-        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.4.5" />
+        <PackageReference Include="Nuages.PubSub.API.Endpoints" Version="1.4.6" />
+        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.4.6" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
     

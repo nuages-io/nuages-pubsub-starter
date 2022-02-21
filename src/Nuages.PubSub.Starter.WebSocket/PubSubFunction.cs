@@ -49,10 +49,31 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         serviceCollection
             .AddSingleton(configuration);
             
-        serviceCollection.AddPubSubLambdaRoutes(configuration)
+        serviceCollection
+            .AddPubSubLambdaRoutes(configuration)
             .AddPubSubService()
             .AddPubSubDynamoDbStorage();
 
+        //===================================================================
+        // To use MongoDB
+        //===================================================================
+        // 1. Add a refernce to nuget package Nuages.PubSub.Storage.MongoDb
+        //
+        // 2. replace previous line by  
+        // serviceCollection
+        //     .AddPubSubLambdaRoutes(configuration)
+        //     .AddPubSubService()
+        //     .AddPubSubMongoStorage(config =>
+        //      {
+        //          config.ConnectionString = "";
+        //          config.DatabaseName = "";
+        //      });
+        //
+        // 3. Remove reference to Nuages.PubSub.Storage.DynamoDb
+        //
+        // 3. Apply the same changes to Nuages.PubSub.Starter.API (Startup)
+
+        
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         LoadRoutes(serviceProvider);

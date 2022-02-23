@@ -14,8 +14,8 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
         <PackageReference Include="AWSXRayRecorder" Version="2.10.1" />
-        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.4.6" />
-        <PackageReference Include="Nuages.PubSub.WebSocket.Endpoints" Version="1.4.6" />
+        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.5.2" />
+        <PackageReference Include="Nuages.PubSub.WebSocket.Endpoints" Version="1.5.2" />
     </ItemGroup>
     
     <ItemGroup>

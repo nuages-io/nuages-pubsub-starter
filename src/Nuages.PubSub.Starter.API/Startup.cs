@@ -4,7 +4,6 @@ using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Nuages.PubSub.Services;
 using Nuages.PubSub.Storage.DynamoDb;
-
 namespace Nuages.PubSub.Starter.API;
 
 [ExcludeFromCodeCoverage]
@@ -23,7 +22,8 @@ public class Startup
         services.AddSingleton(_configuration);
 
         services
-            .AddPubSubService(_configuration).AddPubSubDynamoDbStorage();
+            .AddPubSubService(_configuration)
+            .AddPubSubDynamoDbStorage();
 
         //===================================================================
         // To use MongoDB
@@ -41,6 +41,7 @@ public class Startup
         // 3. Remove reference to Nuages.PubSub.Storage.DynamoDb
         //
         // 3. Apply the same changes to Nuages.PubSub.Starter.WebSocket (PubSubFunction)
+        
         
         services.AddControllers().AddJsonOptions(options =>
         {

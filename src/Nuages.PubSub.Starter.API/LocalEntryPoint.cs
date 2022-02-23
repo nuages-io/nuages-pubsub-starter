@@ -14,10 +14,10 @@ public class LocalEntryPoint
 
     private static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, config) =>
+            .ConfigureAppConfiguration((_, config) =>
             {
                 config.AddJsonFile("appsettings.json", true, true);
-                config.AddJsonFile("appsettings.prod.json", false, true);
+                config.AddJsonFile("appsettings.prod.json", true, true);
             })
             .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 }

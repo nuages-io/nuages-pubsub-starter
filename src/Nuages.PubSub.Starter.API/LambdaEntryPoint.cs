@@ -28,7 +28,7 @@ public class LambdaEntryPoint : Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFu
             {
                 configBuilder.AddSystemsManager(configureSource =>
                 {
-                    configureSource.Path = $"/{name}/API";
+                    configureSource.Path = $"/{name}";
                     configureSource.ReloadAfter = TimeSpan.FromMinutes(15);
                     configureSource.Optional = true;
                 });

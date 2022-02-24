@@ -33,7 +33,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         {
             builder.AddSystemsManager(configureSource =>
             {
-                configureSource.Path = $"/{name}/WebSocket";
+                configureSource.Path = $"/{name}";
                 configureSource.ReloadAfter = TimeSpan.FromMinutes(15);
                 configureSource.Optional = true;
             });

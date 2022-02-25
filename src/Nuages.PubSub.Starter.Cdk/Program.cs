@@ -18,7 +18,6 @@ sealed class Program
         
         var configuration = configManager
             .AddJsonFile("appsettings.json",  false, true)
-            .AddJsonFile("appsettings.deploy.json",  true, true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -36,6 +35,9 @@ sealed class Program
         });
 
         stack.DataStorage = configuration[ContextValues.DataStorage];
+        
+        //You SHOULD change the value for the following options
+        
         stack.AuthIssuer = configuration[ContextValues.AuthIssuer];
         stack.AuthAudience = configuration[ContextValues.AuthAudience];
         stack.AuthSecret = configuration[ContextValues.AuthSecret];
@@ -63,9 +65,12 @@ sealed class Program
         stack.DatabaseProxyUser = null;
         stack.DatabaseProxySecurityGroup = null;
 
-        //VPC is required if you use a database proxy. Be aware of the restirction regarding Internet access when  
+        //VPC is required if you use a database proxy.
+        //
+        // WARNING!!!!!  Be aware of the restirction regarding Internet access when adding a Lmabda to a VPC
+        // More info here https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
+        // Other example here https://blog.theodo.com/2020/01/internet-access-to-lambda-in-vpc/
         stack.VpcId = null;
-        
         
         stack.CreateTemplate();
 

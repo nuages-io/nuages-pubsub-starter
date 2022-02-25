@@ -47,27 +47,6 @@ public class Startup
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
-
-        services.AddSwaggerDocument(config =>
-        {
-            config.PostProcess = document =>
-            {
-                document.Info.Version = "v1";
-                document.Info.Title = "Nuages WebSocket Service";
-
-                document.Info.Contact = new NSwag.OpenApiContact
-                {
-                    Name = "Nuages.io",
-                    Email = string.Empty,
-                    Url = "https://github.com/nuages-io/nuages-pubsub-starter"
-                };
-                document.Info.License = new NSwag.OpenApiLicense
-                {
-                    Name = "Use under LICENCE",
-                    Url = "http://www.apache.org/licenses/LICENSE-2.0"
-                };
-            };
-        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -96,7 +75,5 @@ public class Startup
             endpoints.MapControllers();
         });
 
-        app.UseOpenApi();
-        app.UseSwaggerUi3();
     }
 }

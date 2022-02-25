@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.IO.Pipes;
 using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
 using Nuages.PubSub.Cdk;
@@ -14,17 +15,18 @@ sealed class Program
     public static void Main(string[] args)
     {
         var configManager = new ConfigurationManager();
-
+        
         var configuration = configManager
             .AddJsonFile("appsettings.json",  false, true)
             .AddJsonFile("appsettings.deploy.json",  true, true)
-            .AddEnvironmentVariables().Build();
-        
-        var options = configuration.Get<ConfigOptions>();
-        
+            .AddEnvironmentVariables()
+            .Build();
+
         var app = new App();
+
+        var stackname = configuration["StackName"];
         
-        var stack = new StarterNuagesPubSubStack(configuration, app, options.StackName, new StackProps
+        var stack = new StarterNuagesPubSubStack(app, stackname, new StackProps
         {
             Env = new Amazon.CDK.Environment
             {
@@ -33,7 +35,37 @@ sealed class Program
             }
         });
 
-        stack.InitializeContextFromOptions(options);
+        stack.DataStorage = configuration[ContextValues.DataStorage];
+        stack.AuthIssuer = configuration[ContextValues.AuthIssuer];
+        stack.AuthAudience = configuration[ContextValues.AuthAudience];
+        stack.AuthSecret = configuration[ContextValues.AuthSecret];
+        
+        //Other variable you may want to set
+        
+        //Web Socket Endpoint
+        stack.WebSocketDomainName = null;
+        stack.WebSocketCertificateArn = null;
+        
+        //API Endpoint
+        stack.ApiDomainName = null;
+        stack.ApiCertificateArn = null;
+        stack.ApiApiKey = null; //Leave null and it will be auto generated. See API GAteway API Key section in the AWS console to retrieve it.
+
+        //Database options
+        stack.DataPort = null; //Assign port if different from the default port from database engine
+        stack.DataConnectionString = null;
+        stack.DataCreateDynamoDbTables = false;
+        
+        //DatabaseProxy, if using MySql
+        stack.DatabaseProxyArn = null;
+        stack.DatabaseProxyEndpoint = null;
+        stack.DatabaseProxyName = null;
+        stack.DatabaseProxyUser = null;
+        stack.DatabaseProxySecurityGroup = null;
+
+        //VPC is required if you use a database proxy. Be aware of the restirction regarding Internet access when  
+        stack.VpcId = null;
+        
         
         stack.CreateTemplate();
 

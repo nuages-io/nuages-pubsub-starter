@@ -11,7 +11,7 @@ namespace Nuages.PubSub.Starter.Cdk;
 public class StarterNuagesPubSubStack : NuagesPubSubWebSocketCdkStack<PubSubFunction>
 {
     // ReSharper disable once UnusedParameter.Local
-    public StarterNuagesPubSubStack(IConfiguration configuration, Construct scope, string id, IStackProps? props = null) 
+    public StarterNuagesPubSubStack(Construct scope, string id, IStackProps? props = null) 
         : base(scope, id, props)
     {
         
@@ -19,7 +19,7 @@ public class StarterNuagesPubSubStack : NuagesPubSubWebSocketCdkStack<PubSubFunc
         ApiAsset = "./src/Nuages.PubSub.Starter.API/bin/Release/net6.0/linux-x64/publish";
 
         WebApiHandler = "Nuages.PubSub.Starter.API::Nuages.PubSub.Starter.API.LambdaEntryPoint::FunctionHandlerAsync";
-    }
 
+    }
   
 }

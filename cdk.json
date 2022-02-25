@@ -1,3 +1,6 @@
 {
-  "app": "sh build.sh;dotnet run --project src/Nuages.PubSub.Starter.Cdk/Nuages.PubSub.Starter.Cdk.csproj"
+  "app": "sh build.sh;dotnet run --project src/Nuages.PubSub.Starter.Cdk/Nuages.PubSub.Starter.Cdk.csproj",
+  "context": {
+    "key": "value"
+  }
 }

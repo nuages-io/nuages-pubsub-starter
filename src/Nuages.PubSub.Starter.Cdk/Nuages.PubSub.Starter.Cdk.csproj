@@ -12,7 +12,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-        <PackageReference Include="Nuages.PubSub.Cdk" Version="1.5.2" />
+        <PackageReference Include="Nuages.PubSub.Cdk" Version="1.5.7" />
     </ItemGroup>
 
 
@@ -20,9 +20,7 @@
         <None Remove="appsettings.json" />
         <Content Include="appsettings.json" CopyToOutputDirectory="Always" />
     </ItemGroup>
-    <ItemGroup>
-        <Content Include="appsettings.deploy2.json" CopyToOutputDirectory="Always" Condition="Exists('appsettings.deploy.json')" />
-    </ItemGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\Nuages.PubSub.Starter.WebSocket\Nuages.PubSub.Starter.WebSocket.csproj" />
     </ItemGroup>

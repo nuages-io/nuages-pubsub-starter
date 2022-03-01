@@ -14,6 +14,8 @@
         <PackageReference Include="AWSXRayRecorder" Version="2.10.1" />
         <PackageReference Include="Nuages.PubSub.API.Endpoints" Version="1.5.7" />
         <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.5.7" />
+        <PackageReference Include="Nuages.PubSub.Storage.EntityFramework.MySql" Version="1.5.7" />
+        <PackageReference Include="Nuages.PubSub.Storage.Mongo" Version="1.5.7" />
     </ItemGroup>
     
     <ItemGroup>

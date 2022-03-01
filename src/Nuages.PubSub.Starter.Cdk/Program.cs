@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IO.Pipes;
 using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
 using Nuages.PubSub.Cdk;
@@ -32,46 +31,39 @@ sealed class Program
                 Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
                 Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
             }
-        });
+        })
+        {
+            DataStorage = configuration[ContextValues.DataStorage],
+            //You SHOULD change the value for the following options
+            AuthIssuer = configuration[ContextValues.AuthIssuer],
+            AuthAudience = configuration[ContextValues.AuthAudience],
+            AuthSecret = configuration[ContextValues.AuthSecret],
+            //Web Socket Endpoint
+            //Other variable you may want to set
+            WebSocketDomainName = null,
+            WebSocketCertificateArn = null,
+            //API Endpoint
+            ApiDomainName = null,
+            ApiCertificateArn = null,
+            ApiApiKey = null, //Leave null and it will be auto generated. See API GAteway API Key section in the AWS console to retrieve it.
+            //Database options
+            DataPort = null, //Assign port if different from the default port from database engine
+            DataConnectionString = null,
+            DataCreateDynamoDbTables = false,
+            //DatabaseProxy, if using MySql
+            DatabaseProxyArn = null,
+            DatabaseProxyEndpoint = null,
+            DatabaseProxyName = null,
+            DatabaseProxyUser = null,
+            DatabaseProxySecurityGroup = null,
+            // Other example here https://blog.theodo.com/2020/01/internet-access-to-lambda-in-vpc/
+            // More info here https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
+            // WARNING!!!!!  Be aware of the restirction regarding Internet access when adding a Lmabda to a VPC
+            //
+            //VPC is required if you use a database proxy.
+            VpcId = null
+        };
 
-        stack.DataStorage = configuration[ContextValues.DataStorage];
-        
-        //You SHOULD change the value for the following options
-        
-        stack.AuthIssuer = configuration[ContextValues.AuthIssuer];
-        stack.AuthAudience = configuration[ContextValues.AuthAudience];
-        stack.AuthSecret = configuration[ContextValues.AuthSecret];
-        
-        //Other variable you may want to set
-        
-        //Web Socket Endpoint
-        stack.WebSocketDomainName = null;
-        stack.WebSocketCertificateArn = null;
-        
-        //API Endpoint
-        stack.ApiDomainName = null;
-        stack.ApiCertificateArn = null;
-        stack.ApiApiKey = null; //Leave null and it will be auto generated. See API GAteway API Key section in the AWS console to retrieve it.
-
-        //Database options
-        stack.DataPort = null; //Assign port if different from the default port from database engine
-        stack.DataConnectionString = null;
-        stack.DataCreateDynamoDbTables = false;
-        
-        //DatabaseProxy, if using MySql
-        stack.DatabaseProxyArn = null;
-        stack.DatabaseProxyEndpoint = null;
-        stack.DatabaseProxyName = null;
-        stack.DatabaseProxyUser = null;
-        stack.DatabaseProxySecurityGroup = null;
-
-        //VPC is required if you use a database proxy.
-        //
-        // WARNING!!!!!  Be aware of the restirction regarding Internet access when adding a Lmabda to a VPC
-        // More info here https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
-        // Other example here https://blog.theodo.com/2020/01/internet-access-to-lambda-in-vpc/
-        stack.VpcId = null;
-        
         stack.CreateTemplate();
 
         app.Synth();

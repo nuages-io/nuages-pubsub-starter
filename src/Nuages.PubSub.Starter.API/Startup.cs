@@ -2,8 +2,12 @@
 using System.Text.Json.Serialization;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
+using Microsoft.EntityFrameworkCore;
 using Nuages.PubSub.Services;
 using Nuages.PubSub.Storage.DynamoDb;
+using Nuages.PubSub.Storage.EntityFramework.MySql;
+using Nuages.PubSub.Storage.Mongo;
+
 namespace Nuages.PubSub.Starter.API;
 
 [ExcludeFromCodeCoverage]
@@ -21,27 +25,42 @@ public class Startup
     {
         services.AddSingleton(_configuration);
 
-        services
-            .AddPubSubService(_configuration)
-            .AddPubSubDynamoDbStorage();
-
-        //===================================================================
-        // To use MongoDB
-        //===================================================================
-        // 1. Add a refernce to nuget package Nuages.PubSub.Storage.MongoDb
-        //
-        // 2. replace previous line by  
-        // services
-        //     .AddPubSubService(_configuration).AddPubSubMongoStorage(config =>
-        //      {
-        //          config.ConnectionString = "";
-        //          config.DatabaseName = "";
-        //      });
-        //
-        // 3. Remove reference to Nuages.PubSub.Storage.DynamoDb
-        //
-        // 3. Apply the same changes to Nuages.PubSub.Starter.WebSocket (PubSubFunction)
+        var pubSubBuilder = services
+            .AddPubSubService(_configuration);
         
+        var storage = _configuration["Nuages:Data:Storage"]; //Values is set on deployment
+
+        switch (storage)
+        {
+            case "DyanmoDb":
+            {
+                pubSubBuilder.AddPubSubDynamoDbStorage();
+                break;
+            }
+            case "MongoDb":
+            {
+                pubSubBuilder.AddPubSubMongoStorage(config =>
+                {
+                    config.ConnectionString = _configuration["Nuages:Data:Mongo:ConnectionString"];
+                });
+                break;
+            }
+            case "MySql":
+            {
+                pubSubBuilder.AddPubSubMySqlStorage(config =>
+                {
+                    var connectionString = _configuration["Nuages:Data:MySql:ConnectionString"];
+                    config.UseMySQL(connectionString);
+                });
+
+                break;
+            }
+            default:
+            {
+                throw new NotSupportedException("Storage not supported");
+            }
+        }
+            
         
         services.AddControllers().AddJsonOptions(options =>
         {

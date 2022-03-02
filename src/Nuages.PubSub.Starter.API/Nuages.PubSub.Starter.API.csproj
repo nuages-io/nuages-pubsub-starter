@@ -12,10 +12,10 @@
         <PackageReference Include="Amazon.Extensions.Configuration.SystemsManager" Version="3.0.0" />
         <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="7.0.1" />
         <PackageReference Include="AWSXRayRecorder" Version="2.10.1" />
-        <PackageReference Include="Nuages.PubSub.API.Endpoints" Version="1.5.7" />
-        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.5.7" />
-        <PackageReference Include="Nuages.PubSub.Storage.EntityFramework.MySql" Version="1.5.7" />
-        <PackageReference Include="Nuages.PubSub.Storage.Mongo" Version="1.5.7" />
+        <PackageReference Include="Nuages.PubSub.API.Endpoints" Version="1.6.2" />
+        <PackageReference Include="Nuages.PubSub.Storage.DynamoDb" Version="1.6.2" />
+        <PackageReference Include="Nuages.PubSub.Storage.EntityFramework.MySql" Version="1.6.2" />
+        <PackageReference Include="Nuages.PubSub.Storage.Mongo" Version="1.6.2" />
     </ItemGroup>
     
     <ItemGroup>

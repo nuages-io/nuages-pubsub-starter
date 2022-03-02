@@ -7,7 +7,7 @@ using Nuages.PubSub.Starter.WebSocket;
 namespace Nuages.PubSub.Starter.Cdk;
 
 [ExcludeFromCodeCoverage]
-public class StarterNuagesPubSubStack : NuagesPubSubWebSocketCdkStack<PubSubFunction>
+public class StarterNuagesPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
 {
     // ReSharper disable once UnusedParameter.Local
     public StarterNuagesPubSubStack(Construct scope, string id, IStackProps? props = null) 

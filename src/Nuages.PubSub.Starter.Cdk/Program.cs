@@ -46,22 +46,21 @@ sealed class Program
             ApiDomainName = null,
             ApiCertificateArn = null,
             ApiApiKey = null, //Leave null and it will be auto generated. See API GAteway API Key section in the AWS console to retrieve it.
-            //Database options
-            DataPort = null, //Assign port if different from the default port from database engine
+            
             DataConnectionString = null,
-            DataCreateDynamoDbTables = false,
             //DatabaseProxy, if using MySql
             DatabaseProxyArn = null,
             DatabaseProxyEndpoint = null,
             DatabaseProxyName = null,
             DatabaseProxyUser = null,
-            DatabaseProxySecurityGroup = null,
+            
             // Other example here https://blog.theodo.com/2020/01/internet-access-to-lambda-in-vpc/
             // More info here https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
             // WARNING!!!!!  Be aware of the restirction regarding Internet access when adding a Lmabda to a VPC
             //
             //VPC is required if you use a database proxy.
-            VpcId = null
+            VpcId = null,
+            SecurityGroupId = null
         };
 
         stack.CreateTemplate();

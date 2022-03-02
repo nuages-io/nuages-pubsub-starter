@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using NLog.Web;
+using Nuages.Web;
 
 namespace Nuages.PubSub.Starter.API;
 
@@ -9,7 +10,6 @@ public class LambdaEntryPoint : Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFu
 {
     protected override void Init(IWebHostBuilder builder)
     {
-        
         builder.UseStartup<Startup>();
     }
 
@@ -19,19 +19,26 @@ public class LambdaEntryPoint : Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFu
         builder.ConfigureAppConfiguration((context, configBuilder) =>
         {
             configBuilder.AddJsonFile("appsettings.json", false, true);
-            configBuilder.AddJsonFile("appsettings.prod.json", true, true);
             configBuilder.AddEnvironmentVariables();
             
-            var name = Environment.GetEnvironmentVariable("Nuages__PubSub__StackName");
+            var configuration = configBuilder.Build();
 
-            if (name != null)
+            var config = configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
+        
+            if (config.ParameterStore.Enabled)
             {
                 configBuilder.AddSystemsManager(configureSource =>
                 {
-                    configureSource.Path = $"/{name}";
-                    configureSource.ReloadAfter = TimeSpan.FromMinutes(15);
+                    configureSource.Path = config.ParameterStore.Path;
                     configureSource.Optional = true;
                 });
+            }
+
+            if (config.AppConfig.Enabled)
+            {
+                configBuilder.AddAppConfig(config.AppConfig.ApplicationId,  
+                    config.AppConfig.EnvironmentId, 
+                    config.AppConfig.ConfigProfileId,true);
             }
         }).UseNLog();
 

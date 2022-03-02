@@ -11,6 +11,7 @@ using Nuages.PubSub.Storage.DynamoDb;
 using Nuages.PubSub.Storage.EntityFramework.MySql;
 using Nuages.PubSub.Storage.Mongo;
 using Nuages.PubSub.WebSocket.Endpoints;
+using Nuages.Web;
 
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
 
@@ -27,23 +28,28 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         var builder = configManager
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json",  false, true)
-            .AddJsonFile("appsettings.prod.json",  true, true)
             .AddEnvironmentVariables();
      
-        var name = Environment.GetEnvironmentVariable("Nuages__PubSub__StackName");
+        var configuration = builder.Build();
 
-        if (name != null)
+        var config = configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
+        
+        if (config.ParameterStore.Enabled)
         {
             builder.AddSystemsManager(configureSource =>
             {
-                configureSource.Path = $"/{name}";
-                configureSource.ReloadAfter = TimeSpan.FromMinutes(15);
+                configureSource.Path = config.ParameterStore.Path;
                 configureSource.Optional = true;
             });
         }
+
+        if (config.AppConfig.Enabled)
+        {
+            builder.AddAppConfig(config.AppConfig.ApplicationId,  
+                config.AppConfig.EnvironmentId, 
+                config.AppConfig.ConfigProfileId,true);
+        }
         
-        IConfiguration configuration = builder.Build();
-            
         AWSSDKHandler.RegisterXRayForAllServices();
         AWSXRayRecorder.InitializeInstance(configuration);
         
@@ -55,31 +61,46 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         var  pubSubBuilder = serviceCollection
             .AddPubSubService(configuration);
         
-            pubSubBuilder.AddPubSubLambdaRoutes(configuration);
+        var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes(configuration);
 
-        var storage = configuration["Nuages:Data:Storage"]; //Values is set on deployment
+        // var useExternalAuth = false;
+        // if (useExternalAuth)
+        // {
+        //     pubSubRouteBuilder.UseExternalAuthRoute();
+        // }
+        
+        ConfigStorage(pubSubBuilder);
+
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        LoadRoutes(serviceProvider);
+    }
+
+    private static void ConfigStorage(IPubSubBuilder pubSubBuilder)
+    {
+        var storage = "DyanmoDb"; //Change this value to use an alternative database engine
 
         switch (storage)
         {
-            case "DyanmoDb":
+            case "DynamoDb":
             {
                 pubSubBuilder.AddPubSubDynamoDbStorage();
                 break;
             }
             case "MongoDb":
             {
-                pubSubBuilder.AddPubSubMongoStorage(config =>
+                pubSubBuilder.AddPubSubMongoStorage(configOptions =>
                 {
-                    config.ConnectionString = configuration["Nuages:Data:Mongo:ConnectionString"];
+                    configOptions.ConnectionString = string.Empty; //Set the connection string, including the databse name
                 });
                 break;
             }
             case "MySql":
             {
-                pubSubBuilder.AddPubSubMySqlStorage(config =>
+                pubSubBuilder.AddPubSubMySqlStorage(configOptions =>
                 {
-                    var connectionString = configuration["Nuages:Data:MySql:ConnectionString"];
-                    config.UseMySQL(connectionString);
+                    var connectionString = string.Empty; //Set the connection string
+                    configOptions.UseMySQL(connectionString);
                 });
 
                 break;
@@ -89,10 +110,5 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 throw new NotSupportedException("Storage not supported");
             }
         }
-
-        
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-
-        LoadRoutes(serviceProvider);
     }
 }

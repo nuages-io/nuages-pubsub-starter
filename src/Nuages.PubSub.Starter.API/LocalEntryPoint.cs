@@ -17,7 +17,6 @@ public class LocalEntryPoint
             .ConfigureAppConfiguration((_, config) =>
             {
                 config.AddJsonFile("appsettings.json", true, true);
-                config.AddJsonFile("appsettings.prod.json", true, true);
             })
             .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 }

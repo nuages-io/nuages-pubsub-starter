@@ -27,12 +27,12 @@ public class Startup
 
         var pubSubBuilder = services
             .AddPubSubService(_configuration);
-        
-        var storage = _configuration["Nuages:Data:Storage"]; //Values is set on deployment
+
+        var storage = "DynamoDb";
 
         switch (storage)
         {
-            case "DyanmoDb":
+            case "DynamoDb":
             {
                 pubSubBuilder.AddPubSubDynamoDbStorage();
                 break;
@@ -61,7 +61,6 @@ public class Startup
             }
         }
             
-        
         services.AddControllers().AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

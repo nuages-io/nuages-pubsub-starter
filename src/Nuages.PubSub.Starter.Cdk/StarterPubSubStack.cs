@@ -12,8 +12,9 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
 {
     public static void CreateStack(Construct scope, IConfiguration configuration, ApplicationSettings applicationSettings)
     {
-        var stack = new StarterPubSubStack(scope, applicationSettings.StackName, configuration, new StackProps
+        var stack = new StarterPubSubStack(scope, "Stack", configuration, new StackProps
         {
+            StackName = applicationSettings.StackName,
             Env = new Amazon.CDK.Environment
             {
                 Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),

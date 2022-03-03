@@ -38,6 +38,7 @@ sealed class Program
                 config.AppConfig.EnvironmentId, 
                 config.AppConfig.ConfigProfileId,true);
         }
+        
 
         var app = new App();
 

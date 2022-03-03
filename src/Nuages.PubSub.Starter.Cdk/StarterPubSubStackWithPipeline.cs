@@ -20,7 +20,7 @@ public class StarterPubSubStackWithPipeline : Stack
     public static void Create(Construct scope, IConfiguration configuration, ApplicationSettings applicationSettings)
     {
         // ReSharper disable once ObjectCreationAsStatement
-        new StarterPubSubStackWithPipeline(scope, $"{configuration["StackName"]}-PipelineStack", configuration, applicationSettings, new StackProps
+        new StarterPubSubStackWithPipeline(scope, $"{applicationSettings.StackName}-PipelineStack", configuration, applicationSettings, new StackProps
         {
             Env = new Amazon.CDK.Environment
             {
@@ -36,7 +36,7 @@ public class StarterPubSubStackWithPipeline : Stack
 
         var pipeline = new CodePipeline(this, "pipeline", new CodePipelineProps
         {
-            PipelineName = $"{configuration["StackName"]}-Pipeline",
+            PipelineName = $"{applicationSettings.StackName}-Pipeline",
             SynthCodeBuildDefaults = new CodeBuildOptions
             {
                 RolePolicy = new PolicyStatement[]
@@ -61,11 +61,11 @@ public class StarterPubSubStackWithPipeline : Stack
             Synth = new ShellStep("Synth",
                 new ShellStepProps
                 {
-                    Input = CodePipelineSource.GitHub(configuration["GithubRepository"],
-                        "main",
+                    Input = CodePipelineSource.GitHub(configuration["CDKPipeline:GithubRepository"],
+                        "master",
                         new GitHubSourceOptions
                         {
-                            Authentication = SecretValue.PlainText(configuration["GithubToken"]),
+                            Authentication = SecretValue.PlainText(configuration["CDKPipeline:GithubToken"]),
                             Trigger = GitHubTrigger.WEBHOOK
                         }),
                     Commands = new []
@@ -123,7 +123,7 @@ public class StarterPubSubStackWithPipeline : Stack
 
         pipeline.BuildPipeline();
         
-        var arn = configuration["NotificationTargetArn"];
+        var arn = configuration["CDKPipeline:NotificationTargetArn"];
 
         if (!string.IsNullOrEmpty(arn))
         {

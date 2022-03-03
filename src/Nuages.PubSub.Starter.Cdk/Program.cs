@@ -41,44 +41,14 @@ sealed class Program
 
         var app = new App();
 
-        var stackname = applicationSettings.StackName;
-        
-        var stack = new StarterNuagesPubSubStack(app, stackname, configuration, new StackProps
+        if (args.Contains("--pipeline"))
         {
-            Env = new Amazon.CDK.Environment
-            {
-                Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
-                Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
-            }
-        })
+            StarterPubSubStackWithPipeline.Create(app, configuration, applicationSettings);
+        }
+        else
         {
-            //Web Socket Endpoint
-            //Other variable you may want to set
-            WebSocketDomainName = applicationSettings.WebSocketDomainName,
-            WebSocketCertificateArn = applicationSettings.WebSocketCertificateArn,
-            
-            //API Endpoint
-            ApiDomainName = applicationSettings.ApiDomainName,
-            ApiCertificateArn = applicationSettings.ApiCertificateArn,
-            ApiApiKey = applicationSettings.ApiApiKey, //Leave null and it will be auto generated. See API GAteway API Key section in the AWS console to retrieve it.
-            
-            // Other example here https://blog.theodo.com/2020/01/internet-access-to-lambda-in-vpc/
-            // More info here https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
-            // WARNING!!!!!  Be aware of the restirction regarding Internet access when adding a Lmabda to a VPC
-            //
-            //VPC is required if you use a database proxy.
-            VpcId = applicationSettings.VpcId,
-            SecurityGroupId = applicationSettings.SecurityGroupId,
-            
-            //DatabaseProxy, if using MySql
-            DatabaseProxyArn = applicationSettings.DatabaseProxyArn,
-            DatabaseProxyEndpoint = applicationSettings.DatabaseProxyEndpoint,
-            DatabaseProxyName = applicationSettings.DatabaseProxyName,
-            DatabaseProxyUser = applicationSettings.DatabaseProxyUser,
-        };
-
-        stack.BuildStack();
-
+            StarterPubSubStack.CreateStack(app, configuration, applicationSettings);
+        }
         app.Synth();
     }
 }

@@ -79,7 +79,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
 
     private static void ConfigStorage(IPubSubBuilder pubSubBuilder)
     {
-        var storage = "DyanmoDb"; //Change this value to use an alternative database engine
+        var storage = "DynamoDb"; //Change this value to use an alternative database engine
 
         switch (storage)
         {

@@ -50,30 +50,31 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 config.AppConfig.ConfigProfileId,true);
         }
         
-        AWSSDKHandler.RegisterXRayForAllServices();
-        AWSXRayRecorder.InitializeInstance(configuration);
-        
         var serviceCollection = new ServiceCollection();
 
         serviceCollection
             .AddSingleton(configuration);
 
         var  pubSubBuilder = serviceCollection
-            .AddPubSubService(configuration);
+            .AddPubSubService(configuration, options =>
+            {
+                
+            });
         
         var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes(configuration);
 
-        // var useExternalAuth = false;
-        // if (useExternalAuth)
-        // {
-        //     pubSubRouteBuilder.UseExternalAuthRoute();
-        // }
+        var useExternalAuth = false;
+        if (useExternalAuth)
+            pubSubRouteBuilder.UseExternalAuthRoute();
         
         ConfigStorage(pubSubBuilder);
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         LoadRoutes(serviceProvider);
+        
+        AWSSDKHandler.RegisterXRayForAllServices();
+        AWSXRayRecorder.InitializeInstance(configuration);
     }
 
     private static void ConfigStorage(IPubSubBuilder pubSubBuilder)

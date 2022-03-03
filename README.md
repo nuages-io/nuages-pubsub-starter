@@ -70,6 +70,8 @@ By default, the stack will be deployed with the current configuration
 
 - Auto generated URL for WebSocket Enpoint and API Endpoint
 - DynamoDb as internal storage
+- Auto-generated API key
+- Default values for Issuer, Audience and Secret.
 
 You can customize this behavior by setting the following options.
 
@@ -91,7 +93,7 @@ You can customize this behavior by setting the following options.
 
 **Database Proxy Options**
 
-You will also have to set the following options if you choose to use a DatabaseProxy. Both the VPC and DatabaseProxy must exists and will NOT be created during deployment. All options are required.
+The following options applies if you choose to use a DatabaseProxy for your SQL database. Both the VPC and DatabaseProxy must exists and will NOT be created during deployment. All options are required.
 
 | Name                       | Description                | Instructions                                                 |
 | -------------------------- | -------------------------- | ------------------------------------------------------------ |
@@ -105,14 +107,40 @@ You will also have to set the following options if you choose to use a DatabaseP
 
 
 
+**Other settings**
+
+The following settings can be set at deployment time. You may also want to set the values using standard application settings (see following section).
+
+| Name          | Description    | Instructions |
+| ------------- | -------------- | ------------ |
+|               |                |              |
+| Auth_Issuer   | Token issuer   |              |
+| Auth_Audience | Token audience |              |
+| Auth_Secret   | Token secret   |              |
+
+
+
+The following settings applies when you want to use External Authentification 
+
+| Name                              | Description | Instructions |
+| --------------------------------- | ----------- | ------------ |
+|                                   |             |              |
+| ExternalAuth_Enabled              |             |              |
+| ExternalAuth_ValidAudiences       |             |              |
+| ExternalAuth_ValidIssuers         |             |              |
+| ExternalAuth_DisableSslCheck      |             |              |
+| ExternalAuth_JsonWebKeySetUrlPath |             |              |
+
+
+
 ### 3. Appsettings.json
 
 Runtime option applies to **Nuages.PubSub.Starter.API** and **Nuages.PubSub.Starter.WebSocket** projects.
 
 You have many options to set application settings:
 
-- Change appsettings.json (not recommended)
-- Add a new configuration file (Ex. appsettings.prod.json)
+- Change appsettings.json 
+- Set directly in the code
 - Set options from System Manager Parameter Store 
 - Set options from System Manager AppConfig (recommended)
 
@@ -229,6 +257,8 @@ To do so, you will have to call UseExternalAuthRoute and provide some settings.
           .AddPubSubLambdaRoutes(configuration)
           .UseExternalAuthRoute(options =>
           {
+            	options.Enabled = true;
+            
               //Set options here or set application settings
             	options.ValidAudiences = "...",
             	options.ValidIssuers = "...",
@@ -249,12 +279,16 @@ Sample configuration section.
 {
   "Nuages":
   {
-    "ExternalAuth" :
+    "PubSub":
     {
-      "ValidAudiences" : "YourAudience",
-      "ValidIssuers" : "https://issuer.example.com",
-      "JsonWebKeySetUrlPath" : ".well-known/jwks",
-      "DisableSslCheck" : false
+      "ExternalAuth" :
+      {
+        "Enabled": true,
+        "ValidAudiences" : "YourAudience",
+        "ValidIssuers" : "https://issuer.example.com",
+        "JsonWebKeySetUrlPath" : ".well-known/jwks",
+        "DisableSslCheck" : false
+      }
     }
   }
 }

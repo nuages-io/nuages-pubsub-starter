@@ -61,11 +61,11 @@ public class StarterPubSubStackWithPipeline : Stack
             Synth = new ShellStep("Synth",
                 new ShellStepProps
                 {
-                    Input = CodePipelineSource.GitHub(configuration["CDKPipeline:GithubRepository"],
+                    Input = CodePipelineSource.GitHub(applicationSettings.CDKPipeline.GitHubRepository,
                         "master",
                         new GitHubSourceOptions
                         {
-                            Authentication = SecretValue.PlainText(configuration["CDKPipeline:GithubToken"]),
+                            Authentication = SecretValue.PlainText(applicationSettings.CDKPipeline.GithubToken),
                             Trigger = GitHubTrigger.WEBHOOK
                         }),
                     Commands = new []
@@ -123,7 +123,7 @@ public class StarterPubSubStackWithPipeline : Stack
 
         pipeline.BuildPipeline();
         
-        var arn = configuration["CDKPipeline:NotificationTargetArn"];
+        var arn = applicationSettings.CDKPipeline.NotificationTargetArn;
 
         if (!string.IsNullOrEmpty(arn))
         {
@@ -156,48 +156,6 @@ public class StarterPubSubStackWithPipeline : Stack
                 NotificationRuleName = pipeline.Pipeline.PipelineName
             });
         }
-        
-        // var webhookHookStage = new Stage(this, "Webhook", new Amazon.CDK.StageProps
-        // {
-        //     Env = new Amazon.CDK.Environment
-        //     {
-        //         Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
-        //         Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
-        //     }
-        // });
-        //
-        // var stack = new Stack(webhookHookStage, "Webhook", new StackProps
-        // {
-        //     Env = new Amazon.CDK.Environment
-        //     {
-        //         Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
-        //         Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
-        //     }
-        // });
-        //
-        // new CfnWebhook(stack, "gitHubWebHook", new CfnWebhookProps
-        // {
-        //     Authentication = "GITHUB_HMAC",
-        //     AuthenticationConfiguration = new CfnWebhook.WebhookAuthConfigurationProperty
-        //     {
-        //         SecretToken = configuration["GithubToken"]
-        //     },
-        //     Filters = new[]
-        //     {
-        //         new CfnWebhook.WebhookFilterRuleProperty
-        //         {
-        //             JsonPath = "$.action",
-        //             // the properties below are optional
-        //             MatchEquals = "published"
-        //         }
-        //     },
-        //     TargetAction = configuration["GithubRepository"].Replace("/", "_"),
-        //     TargetPipeline = $"{configuration["StackName"]}-Pipeline",
-        //     TargetPipelineVersion = 1,
-        //     RegisterWithThirdParty = true
-        // });
-        //
-        // pipeline.AddStage(webhookHookStage);
     }
 
     private class PipelineAppStage : Stage

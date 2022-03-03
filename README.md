@@ -122,17 +122,7 @@ The expected appsettings.json configuration format is as followed.
 ```json
 {
   "Nuages": {
-    "Data": {
-      "Storage" : "MongoDb",
-      "MongoDb" : 
-      {
-          "ConnectionString": "connection-string"
-      },
-      "MySql" : 
-      {
-          "ConnectionString": null
-      }      
-    },
+    
     "PubSub": {
       "Auth":
       {
@@ -142,11 +132,16 @@ The expected appsettings.json configuration format is as followed.
       },
       "ExternalAuth" :
       {
+        "Enabled" : false,
         "ValidAudiences" : null,
         "ValidIssuers" : null,
         "JsonWebKeySetUrlPath" : null,
         "DisableSslCheck" : false
-      }
+      },
+      "Data": {
+        "Storage" : "MongoDb",
+        "ConnectionString" : null
+    	}
     }    
   }
 }

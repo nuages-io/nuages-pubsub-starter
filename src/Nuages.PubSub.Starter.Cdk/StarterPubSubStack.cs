@@ -10,6 +10,8 @@ namespace Nuages.PubSub.Starter.Cdk;
 [ExcludeFromCodeCoverage]
 public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
 {
+    private readonly IConfiguration _configuration;
+
     public static void CreateStack(Construct scope, IConfiguration configuration, ApplicationSettings applicationSettings)
     {
         var stack = new StarterPubSubStack(scope, "Stack", configuration, new StackProps
@@ -39,12 +41,25 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
             //VPC is required if you use a database proxy.
             VpcId = applicationSettings.VpcId,
             SecurityGroupId = applicationSettings.SecurityGroupId,
-            
+            // Storage
+            DataStorage = applicationSettings.DataStorage,
+            DataConnectionString = applicationSettings.DataConnectionString,
             //DatabaseProxy, if using MySql
             DatabaseProxyArn = applicationSettings.DatabaseProxyArn,
             DatabaseProxyEndpoint = applicationSettings.DatabaseProxyEndpoint,
             DatabaseProxyName = applicationSettings.DatabaseProxyName,
             DatabaseProxyUser = applicationSettings.DatabaseProxyUser,
+            
+            //Authentification
+            Auth_Audience = applicationSettings.Auth.InternalAuth.Audience,
+            Auth_Issuer = applicationSettings.Auth.InternalAuth.Issuer,
+            Auth_Secret = applicationSettings.Auth.InternalAuth.Secret,
+            //OR external authentification
+            ExternalAuth_Enabled = applicationSettings.Auth.ExternalAuth.Enabled,
+            ExternalAuth_ValidAudiences = applicationSettings.Auth.ExternalAuth.ValidAudiences,
+            ExternalAuth_ValidIssuers = applicationSettings.Auth.ExternalAuth.ValidIssuers,
+            ExternalAuth_DisableSslCheck = applicationSettings.Auth.ExternalAuth.DisableSslCheck,
+            ExternalAuth_JsonWebKeySetUrlPath = applicationSettings.Auth.ExternalAuth.JsonWebKeySetUrlPath
         };
 
         stack.BuildStack();
@@ -55,19 +70,11 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
     private StarterPubSubStack(Construct scope, string id, IConfiguration configuration, IStackProps? props = null) 
         : base(scope, id, props)
     {
+        _configuration = configuration;
+        
         WebSocketAsset = "./src/Nuages.PubSub.Starter.WebSocket/bin/Release/net6.0/linux-x64/publish";
         ApiAsset = "./src/Nuages.PubSub.Starter.API/bin/Release/net6.0/linux-x64/publish";
 
         WebApiHandler = "Nuages.PubSub.Starter.API::Nuages.PubSub.Starter.API.LambdaEntryPoint::FunctionHandlerAsync";
-    }
-
-    protected override void AddWebApiEnvironmentVariables(Dictionary<string, string> environmentVariables)
-    {   
-        //Add addtional environment Variables
-    }
-
-    protected override void AddWebSocketEnvironmentVariables(Dictionary<string, string> environmentVariables)
-    {
-        //Add addtional environment Variables
     }
 }

@@ -19,5 +19,44 @@ public class ApplicationSettings
     public string? DatabaseProxyEndpoint { get; set; }
     public string? DatabaseProxyName { get; set; }
     public string? DatabaseProxyUser { get; set; }
+
+    public string? DataStorage { get; set; }
+    public string? DataConnectionString { get; set; }
+    
+    // ReSharper disable once InconsistentNaming
+    public CDKPipeline CDKPipeline { get; set; } = new();
+
+    public Auth Auth { get; set; } = new();
 }
+
+public class ExternalAuth
+{
+    public bool Enabled { get; set; }
+    public string ValidIssuers { get; set; } = "";
+    public string? ValidAudiences { get; set; }
+    public string JsonWebKeySetUrlPath { get; set; } = ".well-known/jwks";
+    public bool DisableSslCheck { get; set; }
+}
+
+public class InternalAuth
+{
+    public string? Issuer { get; set; }
+    public string? Audience { get; set; }
+    public string? Secret { get; set; }
+}
+
+public class Auth
+{
+    public InternalAuth InternalAuth { get; set; } = new();
+    public ExternalAuth ExternalAuth { get; set; } = new();
+}
+
+// ReSharper disable once InconsistentNaming
+public class CDKPipeline
+{
+    public string GitHubRepository { get; set; } = string.Empty;
+    public string GithubToken { get; set; } = string.Empty;
+    public string? NotificationTargetArn { get; set; }
+}
+
 

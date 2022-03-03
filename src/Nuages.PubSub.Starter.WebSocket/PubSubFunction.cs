@@ -56,18 +56,18 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             .AddSingleton(configuration);
 
         var  pubSubBuilder = serviceCollection
-            .AddPubSubService(configuration, options =>
+            .AddPubSubService(configuration, _ =>
             {
                 
             });
         
-        var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes(configuration);
+        var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes();
 
-        var useExternalAuth = false;
+        var useExternalAuth = configuration.GetValue<bool>("Nuages:PubSub:ExternalAuth:Enabled");
         if (useExternalAuth)
             pubSubRouteBuilder.UseExternalAuthRoute();
         
-        ConfigStorage(pubSubBuilder);
+        ConfigStorage(pubSubBuilder, configuration);
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -77,9 +77,9 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         AWSXRayRecorder.InitializeInstance(configuration);
     }
 
-    private static void ConfigStorage(IPubSubBuilder pubSubBuilder)
+    private static void ConfigStorage(IPubSubBuilder pubSubBuilder, IConfiguration configuration)
     {
-        var storage = "DynamoDb"; //Change this value to use an alternative database engine
+        var storage = configuration["Nuages:PubSub:Data:Storage"];
 
         switch (storage)
         {
@@ -92,7 +92,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             {
                 pubSubBuilder.AddPubSubMongoStorage(configOptions =>
                 {
-                    configOptions.ConnectionString = string.Empty; //Set the connection string, including the databse name
+                    configOptions.ConnectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
                 });
                 break;
             }
@@ -100,7 +100,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             {
                 pubSubBuilder.AddPubSubMySqlStorage(configOptions =>
                 {
-                    var connectionString = string.Empty; //Set the connection string
+                    var connectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
                     configOptions.UseMySQL(connectionString);
                 });
 

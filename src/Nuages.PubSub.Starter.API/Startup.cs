@@ -28,7 +28,17 @@ public class Startup
         var pubSubBuilder = services
             .AddPubSubService(_configuration);
 
-        var storage = "DynamoDb";
+        ConfigStorage(pubSubBuilder);
+
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+    }
+
+    private static void ConfigStorage(IPubSubBuilder pubSubBuilder)
+    {
+        var storage = _configuration["Nuages:PubSub:Data:Storage"];
 
         switch (storage)
         {
@@ -41,7 +51,7 @@ public class Startup
             {
                 pubSubBuilder.AddPubSubMongoStorage(config =>
                 {
-                    config.ConnectionString = _configuration["Nuages:Data:Mongo:ConnectionString"];
+                    config.ConnectionString = _configuration["Nuages:PubSub:Data:ConnectionString"];
                 });
                 break;
             }
@@ -49,7 +59,7 @@ public class Startup
             {
                 pubSubBuilder.AddPubSubMySqlStorage(config =>
                 {
-                    var connectionString = _configuration["Nuages:Data:MySql:ConnectionString"];
+                    var connectionString = _configuration["Nuages:PubSub:Data:ConnectionString"];
                     config.UseMySQL(connectionString);
                 });
 
@@ -60,11 +70,6 @@ public class Startup
                 throw new NotSupportedException("Storage not supported");
             }
         }
-            
-        services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

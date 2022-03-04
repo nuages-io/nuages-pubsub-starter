@@ -56,10 +56,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             .AddSingleton(configuration);
 
         var  pubSubBuilder = serviceCollection
-            .AddPubSubService(configuration, _ =>
-            {
-                
-            });
+            .AddPubSubService(configuration);
         
         var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes();
 
@@ -83,12 +80,12 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
 
         switch (storage)
         {
-            case "DynamoDb":
+            case "DynamoDB":
             {
                 pubSubBuilder.AddPubSubDynamoDbStorage();
                 break;
             }
-            case "MongoDb":
+            case "MongoDB":
             {
                 pubSubBuilder.AddPubSubMongoStorage(configOptions =>
                 {
@@ -96,7 +93,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 });
                 break;
             }
-            case "MySql":
+            case "MySQL":
             {
                 pubSubBuilder.AddPubSubMySqlStorage(configOptions =>
                 {

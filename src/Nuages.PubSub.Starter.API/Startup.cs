@@ -42,12 +42,12 @@ public class Startup
 
         switch (storage)
         {
-            case "DynamoDb":
+            case "DynamoDB":
             {
                 pubSubBuilder.AddPubSubDynamoDbStorage();
                 break;
             }
-            case "MongoDb":
+            case "MongoDB":
             {
                 pubSubBuilder.AddPubSubMongoStorage(config =>
                 {
@@ -55,7 +55,7 @@ public class Startup
                 });
                 break;
             }
-            case "MySql":
+            case "MySQL":
             {
                 pubSubBuilder.AddPubSubMySqlStorage(config =>
                 {

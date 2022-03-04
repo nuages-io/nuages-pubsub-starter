@@ -41,9 +41,11 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
             //VPC is required if you use a database proxy.
             VpcId = applicationSettings.VpcId,
             SecurityGroupId = applicationSettings.SecurityGroupId,
+            
             // Storage
             DataStorage = applicationSettings.DataStorage,
             DataConnectionString = applicationSettings.DataConnectionString,
+            
             //DatabaseProxy, if using MySql
             DatabaseProxyArn = applicationSettings.DatabaseProxyArn,
             DatabaseProxyEndpoint = applicationSettings.DatabaseProxyEndpoint,
@@ -54,6 +56,7 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
             Auth_Audience = applicationSettings.Auth.InternalAuth.Audience,
             Auth_Issuer = applicationSettings.Auth.InternalAuth.Issuer,
             Auth_Secret = applicationSettings.Auth.InternalAuth.Secret,
+            
             //OR external authentification
             ExternalAuth_Enabled = applicationSettings.Auth.ExternalAuth.Enabled,
             ExternalAuth_ValidAudiences = applicationSettings.Auth.ExternalAuth.ValidAudiences,

@@ -10,6 +10,11 @@ namespace Nuages.PubSub.Starter.API;
 // ReSharper disable once UnusedType.Global
 public class LambdaEntryPoint : Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFunction
 {
+    class SecretValue
+    {
+        public string Value { get; set; } = string.Empty;
+    }
+    
     protected override void Init(IWebHostBuilder builder)
     {
         builder.UseStartup<Startup>();
@@ -52,7 +57,7 @@ public class LambdaEntryPoint : Amazon.Lambda.AspNetCoreServer.APIGatewayProxyFu
                 {
                     var secretProvider = new AWSSecretProvider(new AmazonSecretsManagerClient());
 
-                    var secret = secretProvider.GetSecretAsync<dynamic>(connectionString).Result;
+                    var secret = secretProvider.GetSecretAsync<SecretValue>(connectionString).Result;
                     if (secret != null)
                     {
                         Console.WriteLine($"Real connection string = { secret.Value}");

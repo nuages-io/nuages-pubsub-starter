@@ -23,6 +23,11 @@ namespace Nuages.PubSub.Starter.WebSocket;
 [ExcludeFromCodeCoverage]
 public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
 {
+    class SecretValue
+    {
+        public string Value { get; set; } = string.Empty;
+    }
+    
     public PubSubFunction() 
     {
         var configManager = new ConfigurationManager();
@@ -62,7 +67,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 //Here we are going to read the connection string secret...if this is a scret
                 var secretProvider = new AWSSecretProvider(new AmazonSecretsManagerClient());
 
-                var secret = secretProvider.GetSecretAsync<dynamic>(connectionString).Result;
+                var secret = secretProvider.GetSecretAsync<SecretValue>(connectionString).Result;
                 if (secret != null)
                 {
                     Console.WriteLine($"Real connection string = { secret.Value}");

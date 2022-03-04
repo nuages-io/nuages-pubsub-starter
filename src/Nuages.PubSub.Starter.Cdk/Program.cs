@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
+using Nuages.Web;
 
 namespace Nuages.PubSub.Starter.Cdk;
 
@@ -19,9 +20,7 @@ sealed class Program
             .AddEnvironmentVariables()
             .Build();
 
-        var applicationSettings = configuration.Get<ApplicationSettings>();
-
-        var config = applicationSettings.ApplicationConfig;
+        var config = configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
         
         if (config.ParameterStore.Enabled)
         {
@@ -39,7 +38,8 @@ sealed class Program
                 config.AppConfig.ConfigProfileId,true);
         }
         
-
+        var applicationSettings = configuration.GetSection("Settings").Get<ApplicationSettings>();
+        
         var app = new App();
 
         if (args.Contains("--pipeline"))

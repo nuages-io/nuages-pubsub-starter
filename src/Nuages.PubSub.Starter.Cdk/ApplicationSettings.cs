@@ -6,8 +6,6 @@ public class ApplicationSettings
 {
     public string StackName { get; set; } = string.Empty;
     
-    public ApplicationConfig ApplicationConfig { get; set; } = new();
-    
     public string? WebSocketDomainName { get; set; }
     public string? WebSocketCertificateArn { get; set; }
     public string? ApiDomainName { get; set; }

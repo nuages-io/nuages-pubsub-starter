@@ -231,11 +231,17 @@ Add --pipeline to the "app" element in cdk.json. The command should look like
 Add CDK configuration to your application settings (applicationsettings.json or AppConfig or Parameter Store)
 
 ```json
-"CDKPipeline": {
-    "GitHubRepository": "OWNER/REPO",
-    "GithubToken": "{your-github-token-with-required-roles}",
-  	"NotificationTargetArn" : "~your-notification-arn-chatbot-or-sns"
+{
+  "Settings" : 
+  {
+    "CDKPipeline": {
+      "GitHubRepository": "OWNER/REPO",
+      "GithubToken": "{your-github-token-with-required-roles}",
+      "NotificationTargetArn" : "~your-notification-arn-chatbot-or-sns"
+  	}
   }
+}
+
 ```
 
 The Github token must have repository access and must be able to create webhooks.

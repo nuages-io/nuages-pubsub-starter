@@ -13,7 +13,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
         <PackageReference Include="Nuages.PubSub.Cdk" Version="1.6.9" />
-        <PackageReference Include="Nuages.Web" Version="1.3.13" />
+        <PackageReference Include="Nuages.Web" Version="1.3.14" />
     </ItemGroup>
 
 

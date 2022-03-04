@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
+using Amazon.SecretsManager;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nuages.AWS.Secrets;
 using Nuages.PubSub.Services;
 using Nuages.PubSub.Storage.DynamoDb;
 using Nuages.PubSub.Storage.EntityFramework.MySql;
@@ -50,6 +52,28 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 config.AppConfig.ConfigProfileId,true);
         }
         
+        //Here we are going to read the connection string secret...if this is a scret
+        var connectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
+        Console.WriteLine($"Initial connection string = {connectionString}");
+        if (!string.IsNullOrEmpty(connectionString))
+        {
+            if (connectionString.StartsWith("arn:aws:secretsmanager"))
+            {
+                //Here we are going to read the connection string secret...if this is a scret
+                var secretProvider = new AWSSecretProvider(new AmazonSecretsManagerClient());
+
+                var secret = secretProvider.GetSecretAsync<dynamic>(connectionString).Result;
+                if (secret != null)
+                {
+                    Console.WriteLine($"Real connection string = { secret.Value}");
+                    builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                    {
+                        new ("Nuages:PubSub:Data:ConnectionString",  secret.Value)
+                    });
+                }
+            }
+        }
+
         var serviceCollection = new ServiceCollection();
 
         serviceCollection

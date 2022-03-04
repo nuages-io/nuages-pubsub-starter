@@ -161,9 +161,9 @@ The expected appsettings.json configuration format is as followed.
     "PubSub": {
       "Auth":
       {
-        "Issuer":  "https://issuer.example.com",
-        "Audience":  "YourAudience",
-        "Secret":  "YourSecret"
+        "Issuer": "https://issuer.example.com",
+        "Audience": "YourAudience",
+        "Secret": "YourSecret"
       },
       "ExternalAuth" :
       {

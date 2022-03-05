@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Nuages.Web;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Nuages.PubSub.Starter.Cdk;
 
@@ -39,6 +41,10 @@ sealed class Program
         }
         
         var applicationSettings = configuration.GetSection("Settings").Get<ApplicationSettings>();
+        
+        Console.WriteLine("====================================================================================================");
+        Console.WriteLine(JsonSerializer.Serialize(applicationSettings));
+        Console.WriteLine("====================================================================================================");
         
         var app = new App();
 

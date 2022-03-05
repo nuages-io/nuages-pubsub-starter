@@ -23,11 +23,6 @@ namespace Nuages.PubSub.Starter.WebSocket;
 [ExcludeFromCodeCoverage]
 public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
 {
-    class SecretValue
-    {
-        public string Value { get; set; } = string.Empty;
-    }
-    
     public PubSubFunction() 
     {
         var configManager = new ConfigurationManager();

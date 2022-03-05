@@ -313,3 +313,34 @@ Sample configuration section.
 API Documentaton is available here https://app.swaggerhub.com/apis-docs/Nuages/NuagesPubSub/1.0.0#/
 
 C# SDK is available here https://www.nuget.org/packages/Nuages.PubSub.API.Sdk/
+
+
+
+# How to use Nuages PubSub
+
+
+
+Very quick intructions here...I will be working on something more complete soon.
+
+
+
+- Services URL are available in the Output tab of the Cloud Formation Nuages PubSub stack page
+
+  - One endpoint for WebSocket
+  - One endpoint for the API
+
+- You can connect to the WebSocket endpoint using any standard websocket client. 
+
+  The URL should be in the folloting format : *{{url}}*?hub=*{{Hub}}*&access_token=*{{wss_auth_token}}*
+
+- The {{wss_auth_token}} can be obtain by calling getclienttoken on the API endpoint
+
+  Ex: *{{url}}*/api/auth/getclienttoken?userId=*{{userId}}*&roles=SendMessageToGroup&roles=JoinOrLeaveGroup
+
+- The API endpoint is secured usingh the API Key you provided on deploy (or it has been automatically assign). You can retrieve the value from the API Keys section in the AWS Application Gateway page.
+
+  The API key value should be added to the **x-api-key** request header
+
+  
+
+Complete documentation is on his way...

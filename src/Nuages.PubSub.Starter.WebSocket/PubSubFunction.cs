@@ -51,28 +51,9 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
                 config.AppConfig.EnvironmentId, 
                 config.AppConfig.ConfigProfileId,true);
         }
-        
-        //Here we are going to read the connection string secret...if this is a scret
-        var connectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
-        Console.WriteLine($"Initial connection string = {connectionString}");
-        if (!string.IsNullOrEmpty(connectionString))
-        {
-            if (connectionString.StartsWith("arn:aws:secretsmanager"))
-            {
-                //Here we are going to read the connection string secret...if this is a scret
-                var secretProvider = new AWSSecretProvider(new AmazonSecretsManagerClient());
 
-                var secret = secretProvider.GetSecretAsync<SecretValue>(connectionString).Result;
-                if (secret != null)
-                {
-                    Console.WriteLine($"Real connection string = { secret.Value}");
-                    builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
-                    {
-                        new ("Nuages:PubSub:Data:ConnectionString",  secret.Value)
-                    });
-                }
-            }
-        }
+        var secretProvider = new AWSSecretProvider();
+        secretProvider.TransformSecret<SecretValue>(builder, configuration, "Nuages:PubSub:Data:ConnectionString");
 
         var serviceCollection = new ServiceCollection();
 
@@ -98,6 +79,7 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         AWSXRayRecorder.InitializeInstance(configuration);
     }
 
+    
     private static void ConfigStorage(IPubSubBuilder pubSubBuilder, IConfiguration configuration)
     {
         var storage = configuration["Nuages:PubSub:Data:Storage"];

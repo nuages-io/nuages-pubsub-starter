@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Amazon.CDK;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Nuages.Web;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

@@ -1,5 +1,3 @@
-using Nuages.Web;
-
 namespace Nuages.PubSub.Starter.Cdk;
 
 public class ApplicationSettings

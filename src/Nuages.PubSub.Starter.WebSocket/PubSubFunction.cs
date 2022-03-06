@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
-using Amazon.SecretsManager;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using Microsoft.EntityFrameworkCore;
@@ -53,8 +52,9 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         }
 
         var secretProvider = new AWSSecretProvider();
-        secretProvider.TransformSecret<SecretValue>(builder, configuration, "Nuages:PubSub:Data:ConnectionString");
-
+        secretProvider.TransformSecret(builder, configuration, "Nuages:PubSub:Data:ConnectionString");
+        secretProvider.TransformSecret(builder, configuration, "Nuages:PubSub:Auth:Secret");
+        
         var serviceCollection = new ServiceCollection();
 
         serviceCollection

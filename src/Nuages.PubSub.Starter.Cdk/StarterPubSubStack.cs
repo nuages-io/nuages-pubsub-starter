@@ -10,6 +10,7 @@ namespace Nuages.PubSub.Starter.Cdk;
 [ExcludeFromCodeCoverage]
 public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
 {
+    // ReSharper disable once NotAccessedField.Local
     private readonly IConfiguration _configuration;
 
     public static void CreateStack(Construct scope, IConfiguration configuration, ApplicationSettings applicationSettings)

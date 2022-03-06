@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".CDK", ".CDK", "{1BD1F18E-9
 		..\build.sh = ..\build.sh
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuages.PubSub.Starter.Shared", "Nuages.PubSub.Starter.Shared\Nuages.PubSub.Starter.Shared.csproj", "{E6B28C83-CAB7-4F84-A114-3211093EC546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,12 @@ Global
 		{60D9FC1C-A9EC-4BB0-A163-6F68701E4B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60D9FC1C-A9EC-4BB0-A163-6F68701E4B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60D9FC1C-A9EC-4BB0-A163-6F68701E4B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6B28C83-CAB7-4F84-A114-3211093EC546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6B28C83-CAB7-4F84-A114-3211093EC546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6B28C83-CAB7-4F84-A114-3211093EC546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6B28C83-CAB7-4F84-A114-3211093EC546}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{60D9FC1C-A9EC-4BB0-A163-6F68701E4B5C} = {1BD1F18E-96C1-4994-9F68-008C07549540}
 	EndGlobalSection
 EndGlobal

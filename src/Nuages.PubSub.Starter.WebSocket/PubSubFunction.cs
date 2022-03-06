@@ -3,16 +3,12 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nuages.AWS.Secrets;
 using Nuages.PubSub.Services;
-using Nuages.PubSub.Storage.DynamoDb;
-using Nuages.PubSub.Storage.EntityFramework.MySql;
-using Nuages.PubSub.Storage.Mongo;
+using Nuages.PubSub.Starter.Shared;
 using Nuages.PubSub.WebSocket.Endpoints;
-using Nuages.Web;
 
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
 
@@ -31,37 +27,22 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
             .AddJsonFile("appsettings.json",  false, true)
             .AddEnvironmentVariables();
      
-        var configuration = builder.Build();
-
-        var config = configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
         
-        if (config.ParameterStore.Enabled)
-        {
-            builder.AddSystemsManager(configureSource =>
-            {
-                configureSource.Path = config.ParameterStore.Path;
-                configureSource.Optional = true;
-            });
-        }
-
-        if (config.AppConfig.Enabled)
-        {
-            builder.AddAppConfig(config.AppConfig.ApplicationId,  
-                config.AppConfig.EnvironmentId, 
-                config.AppConfig.ConfigProfileId,true);
-        }
+        builder.AddApplicationConfig(configManager);
 
         var secretProvider = new AWSSecretProvider();
-        secretProvider.TransformSecret(builder, configuration, "Nuages:PubSub:Data:ConnectionString");
-        secretProvider.TransformSecret(builder, configuration, "Nuages:PubSub:Auth:Secret");
+        secretProvider.TransformSecret(configManager, "Nuages:PubSub:Data:ConnectionString");
+        secretProvider.TransformSecret(configManager, "Nuages:PubSub:Auth:Secret");
         
         var serviceCollection = new ServiceCollection();
 
+        var configuration = builder.Build();
+        
         serviceCollection
             .AddSingleton(configuration);
 
         var  pubSubBuilder = serviceCollection
-            .AddPubSubService(configuration);
+            .AddPubSubService(configuration).AddStorage();
         
         var pubSubRouteBuilder = pubSubBuilder.AddPubSubLambdaRoutes();
 
@@ -69,8 +50,6 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         if (useExternalAuth)
             pubSubRouteBuilder.UseExternalAuthRoute();
         
-        ConfigStorage(pubSubBuilder, configuration);
-
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         LoadRoutes(serviceProvider);
@@ -79,40 +58,4 @@ public class PubSubFunction : Nuages.PubSub.WebSocket.Endpoints.PubSubFunction
         AWSXRayRecorder.InitializeInstance(configuration);
     }
 
-    
-    private static void ConfigStorage(IPubSubBuilder pubSubBuilder, IConfiguration configuration)
-    {
-        var storage = configuration["Nuages:PubSub:Data:Storage"];
-
-        switch (storage)
-        {
-            case "DynamoDB":
-            {
-                pubSubBuilder.AddPubSubDynamoDbStorage();
-                break;
-            }
-            case "MongoDB":
-            {
-                pubSubBuilder.AddPubSubMongoStorage(configOptions =>
-                {
-                    configOptions.ConnectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
-                });
-                break;
-            }
-            case "MySQL":
-            {
-                pubSubBuilder.AddPubSubMySqlStorage(configOptions =>
-                {
-                    var connectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
-                    configOptions.UseMySQL(connectionString);
-                });
-
-                break;
-            }
-            default:
-            {
-                throw new NotSupportedException("Storage not supported");
-            }
-        }
-    }
 }

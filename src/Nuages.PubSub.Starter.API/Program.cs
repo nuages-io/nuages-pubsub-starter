@@ -1,37 +1,17 @@
 using System.Text.Json.Serialization;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using Microsoft.EntityFrameworkCore;
 using Nuages.AWS.Secrets;
 using Nuages.PubSub.Services;
-using Nuages.PubSub.Storage.DynamoDb;
-using Nuages.PubSub.Storage.EntityFramework.MySql;
-using Nuages.PubSub.Storage.Mongo;
-using Nuages.Web;
+using Nuages.PubSub.Starter.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configBuilder = builder.Configuration.AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables();
+var configBuilder = builder.Configuration
+                    .AddJsonFile("appsettings.json", false, true)
+                    .AddEnvironmentVariables();
             
-var config = builder.Configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
-        
-if (config.ParameterStore.Enabled)
-{
-    configBuilder.AddSystemsManager(configureSource =>
-    {
-        configureSource.Path = config.ParameterStore.Path;
-        configureSource.Optional = true;
-    });
-}
-
-if (config.AppConfig.Enabled)
-{
-    configBuilder.AddAppConfig(config.AppConfig.ApplicationId,  
-        config.AppConfig.EnvironmentId, 
-        config.AppConfig.ConfigProfileId,true);
-}
-
-
+configBuilder.AddApplicationConfig(builder.Configuration);
 
 var secretProvider = new AWSSecretProvider();
 secretProvider.TransformSecret(builder.Configuration, "Nuages:PubSub:Data:ConnectionString");
@@ -41,9 +21,10 @@ var configuration = configBuilder.Build();
 
 builder.Services.AddSingleton(configuration);
 
-var pubSubBuilder = builder.Services.AddPubSubService(configuration);
+builder.Services
+       .AddPubSubService(configuration)
+        .AddStorage();
 
-ConfigStorage();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -81,38 +62,4 @@ app.UseEndpoints(endpoints =>
 
 app.Run();
 
-void ConfigStorage()
-{
-    var storage = configuration["Nuages:PubSub:Data:Storage"];
 
-    switch (storage)
-    {
-        case "DynamoDB":
-        {
-            pubSubBuilder.AddPubSubDynamoDbStorage();
-            break;
-        }
-        case "MongoDB":
-        {
-            pubSubBuilder.AddPubSubMongoStorage(configMongo =>
-            {
-                configMongo.ConnectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
-            });
-            break;
-        }
-        case "MySQL":
-        {
-            pubSubBuilder.AddPubSubMySqlStorage(configMySql =>
-            {
-                var connectionString = configuration["Nuages:PubSub:Data:ConnectionString"];
-                configMySql.UseMySQL(connectionString);
-            });
-
-            break;
-        }
-        default:
-        {
-            throw new NotSupportedException("Storage not supported");
-        }
-    }
-}

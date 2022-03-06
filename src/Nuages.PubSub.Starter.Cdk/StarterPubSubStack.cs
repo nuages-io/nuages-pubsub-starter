@@ -79,6 +79,6 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
         WebSocketAsset = "./src/Nuages.PubSub.Starter.WebSocket/bin/Release/net6.0/linux-x64/publish";
         ApiAsset = "./src/Nuages.PubSub.Starter.API/bin/Release/net6.0/linux-x64/publish";
 
-        WebApiHandler = "Nuages.PubSub.Starter.API::Nuages.PubSub.Starter.API.LambdaEntryPoint::FunctionHandlerAsync";
+        WebApiHandler = "Nuages.PubSub.Starter.API";
     }
 }

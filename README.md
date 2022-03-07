@@ -308,12 +308,6 @@ Sample configuration section.
 }
 ```
 
-## API / SDK
-
-API Documentaton is available here https://app.swaggerhub.com/apis-docs/Nuages/NuagesPubSub/1.0.0#/
-
-C# SDK is available here https://www.nuget.org/packages/Nuages.PubSub.API.Sdk/
-
 
 
 # How to use Nuages PubSub
@@ -328,19 +322,69 @@ Very quick intructions here...I will be working on something more complete soon.
 
   - One endpoint for WebSocket
   - One endpoint for the API
+    
 
-- You can connect to the WebSocket endpoint using any standard websocket client. 
+![Screen Shot 2022-03-07 at 7.54.36 AM](/Users/martin/Library/Application Support/typora-user-images/Screen Shot 2022-03-07 at 7.54.36 AM.png)
 
-  The URL should be in the folloting format : *{{url}}*?hub=*{{Hub}}*&access_token=*{{wss_auth_token}}*
+- You can get the WebSocket URL using the API Endpoint getclienturi method
 
-- The {{wss_auth_token}} can be obtain by calling getclienttoken on the API endpoint
 
-  Ex: *{{url}}*/api/auth/getclienttoken?userId=*{{userId}}*&roles=SendMessageToGroup&roles=JoinOrLeaveGroup
+The API endpoint is secured usingh the API Key you provided on deploy (or it has been automatically assign). You can retrieve the value from the API Keys section in the AWS Application Gateway page.![Screen Shot 2022-03-07 at 7.57.24 AM](/Users/martin/Desktop/Screen Shot 2022-03-07 at 7.57.24 AM.png)
 
-- The API endpoint is secured usingh the API Key you provided on deploy (or it has been automatically assign). You can retrieve the value from the API Keys section in the AWS Application Gateway page.
 
-  The API key value should be added to the **x-api-key** request header
 
-  
+The API key value should be added to the **x-api-key** request header
 
-Complete documentation is on his way...
+
+
+```
+curl --location --request GET 'https://websocket-api.nuages.org/api/auth/getclienturi \
+?userId=martin \
+&roles=SendMessageToGroup \
+&roles=JoinOrLeaveGroup \
+&hub=Hub1' \
+--header 'x-api-key: IFyTB9Cqad4MuML20j2sG5XfeFvx4LwZ1pgCURS9'
+```
+
+Once you have the WebSocket URL, you can use it to connect using any standard WebSocket client
+
+```
+wscat -c "wss://gwaxs2uio9.execute-api.ca-central-1.amazonaws.com/prod?hub=Hub1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYXJ0aW4iLCJyb2xlcyI6WyJTZW5kTWVzc2FnZVRvR3JvdXAiLCJKb2luT3JMZWF2ZUdyb3VwIl0sIm5iZiI6MTY0NjY1Njk3OCwiZXhwIjoxNjQ2NzQzMzc4LCJpYXQiOjE2NDY2NTY5NzgsImlzcyI6Imh0dHBzOi8vcHVic3ViLm51YWdlcy5vcmciLCJhdWQiOiJOdWFnZXNQdWJTdWIifQ.RojpjqsmGI-e5uoDSssx_3D8L8MIGuRjUQxTV3NZP0E"
+```
+
+The websocket API offers the following handler.
+
+### Echo
+
+```json
+{ "type":"echo" }
+```
+
+### Join
+
+```json
+{ "type":"join","dataType" : "json","group" : "group1"}
+```
+
+### Leave
+
+```json
+{ "type":"leave", "dataType" : "json", "group" : "group1"}
+```
+
+### SendMessage
+
+```json
+{"type":"send", "dataType" : "json", "group" : "group1", "data": { "my_message" : "message sent to group" }}
+```
+
+
+
+
+
+## API / SDK
+
+API Documentaton is available here https://app.swaggerhub.com/apis-docs/Nuages/NuagesPubSub/1.0.0#/
+
+C# SDK is available here https://www.nuget.org/packages/Nuages.PubSub.API.Sdk/
+

@@ -46,7 +46,7 @@ That's it. Your web socket services and API are ready to go.
 
 **The harder way:**
 
-Some benefits require some work. Follow the steps in the following sections to customize the stack.
+Some benefits require some work. Follow the steps in the sections below to customize the stack.
 
 
 
@@ -308,15 +308,9 @@ Sample configuration section.
 }
 ```
 
-
-
 # How to use Nuages PubSub
 
-
-
 Very quick intructions here...I will be working on something more complete soon.
-
-
 
 - Services URL are available in the Output tab of the Cloud Formation Nuages PubSub stack page
 
@@ -324,18 +318,12 @@ Very quick intructions here...I will be working on something more complete soon.
   - One endpoint for the API
     
 
-![Screen Shot 2022-03-07 at 7.54.36 AM](/Users/martin/Library/Application Support/typora-user-images/Screen Shot 2022-03-07 at 7.54.36 AM.png)
-
-- You can get the WebSocket URL using the API Endpoint getclienturi method
+- You can get the WebSocket URL using the **API Endpoint** getclienturi method
 
 
-The API endpoint is secured usingh the API Key you provided on deploy (or it has been automatically assign). You can retrieve the value from the API Keys section in the AWS Application Gateway page.![Screen Shot 2022-03-07 at 7.57.24 AM](/Users/martin/Desktop/Screen Shot 2022-03-07 at 7.57.24 AM.png)
-
-
+The API endpoint is secured usingh the API Key you provided on deploy (or it has been automatically assign). You can retrieve the value from the API Keys section in the AWS Application Gateway page.
 
 The API key value should be added to the **x-api-key** request header
-
-
 
 ```
 curl --location --request GET 'https://websocket-api.nuages.org/api/auth/getclienturi \
@@ -348,11 +336,11 @@ curl --location --request GET 'https://websocket-api.nuages.org/api/auth/getclie
 
 Once you have the WebSocket URL, you can use it to connect using any standard WebSocket client
 
+https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-how-to-call-websocket-api-wscat.html
+
 ```
 wscat -c "wss://gwaxs2uio9.execute-api.ca-central-1.amazonaws.com/prod?hub=Hub1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYXJ0aW4iLCJyb2xlcyI6WyJTZW5kTWVzc2FnZVRvR3JvdXAiLCJKb2luT3JMZWF2ZUdyb3VwIl0sIm5iZiI6MTY0NjY1Njk3OCwiZXhwIjoxNjQ2NzQzMzc4LCJpYXQiOjE2NDY2NTY5NzgsImlzcyI6Imh0dHBzOi8vcHVic3ViLm51YWdlcy5vcmciLCJhdWQiOiJOdWFnZXNQdWJTdWIifQ.RojpjqsmGI-e5uoDSssx_3D8L8MIGuRjUQxTV3NZP0E"
 ```
-
-The websocket API offers the following handler.
 
 ### Echo
 
@@ -378,9 +366,7 @@ The websocket API offers the following handler.
 {"type":"send", "dataType" : "json", "group" : "group1", "data": { "my_message" : "message sent to group" }}
 ```
 
-
-
-
+Additional capabilities are offered using the API Endpoint.
 
 ## API / SDK
 

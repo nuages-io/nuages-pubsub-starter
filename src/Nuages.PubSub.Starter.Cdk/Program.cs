@@ -22,6 +22,9 @@ sealed class Program
             .Build();
 
         var config = configuration.GetSection("ApplicationConfig").Get<ApplicationConfig>();
+
+        if (config == null)
+            throw new Exception("ApplicationConfig not found");
         
         if (config.ParameterStore.Enabled)
         {
@@ -40,6 +43,9 @@ sealed class Program
         }
         
         var applicationSettings = configuration.GetSection("Settings").Get<ApplicationSettings>();
+        
+        if (applicationSettings == null)
+            throw new Exception("Settings not found");
         
         Console.WriteLine("====================================================================================================");
         Console.WriteLine(JsonSerializer.Serialize(applicationSettings));

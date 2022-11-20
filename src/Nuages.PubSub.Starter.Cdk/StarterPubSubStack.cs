@@ -58,12 +58,6 @@ public class StarterPubSubStack : PubSubWebSocketCdkStack<PubSubFunction>
             Auth_Issuer = applicationSettings.Auth.InternalAuth.Issuer,
             Auth_Secret = applicationSettings.Auth.InternalAuth.Secret,
             
-            //OR external authentification
-            ExternalAuth_Enabled = applicationSettings.Auth.ExternalAuth.Enabled,
-            ExternalAuth_ValidAudiences = applicationSettings.Auth.ExternalAuth.ValidAudiences,
-            ExternalAuth_ValidIssuers = applicationSettings.Auth.ExternalAuth.ValidIssuers,
-            ExternalAuth_DisableSslCheck = applicationSettings.Auth.ExternalAuth.DisableSslCheck,
-            ExternalAuth_JsonWebKeySetUrlPath = applicationSettings.Auth.ExternalAuth.JsonWebKeySetUrlPath
         };
 
         stack.BuildStack();

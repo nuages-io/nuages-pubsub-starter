@@ -65,7 +65,7 @@ public class StarterPubSubStackWithPipeline : Stack
                         "master",
                         new GitHubSourceOptions
                         {
-                            Authentication = SecretValue.PlainText(applicationSettings.CDKPipeline.GithubToken),
+                            Authentication = SecretValue.UnsafePlainText(applicationSettings.CDKPipeline.GithubToken),
                             Trigger = GitHubTrigger.WEBHOOK
                         }),
                     Commands = new []
